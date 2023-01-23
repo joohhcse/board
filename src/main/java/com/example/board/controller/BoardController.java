@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -22,10 +23,12 @@ public class BoardController {
     private BoardRepository boardRepository;
 
     @GetMapping("/list")
-    public String list(Model model, @PageableDefault(size = 10) Pageable pageable) {
+    public String list(Model model, @PageableDefault(size = 10) Pageable pageable,
+                       @RequestParam(required = false, defaultValue = "") String searchText) {
 //        List<Boards> boards = boardRepository.findAll();
-        Page<Boards> boards = boardRepository.findAll(pageable);
-//        boards.getTotalElements();
+//        Page<Boards> boards = boardRepository.findAll(pageable);
+        Page<Boards> boards = boardRepository.findByTitleContainingOrContentContaining(searchText, searchText, pageable);
+
         int startPage = Math.max(1, boards.getPageable().getPageNumber() - 4);
         int endPage = Math.min(boards.getTotalPages(), boards.getPageable().getPageNumber() + 4);
         model.addAttribute("startPage", startPage);
