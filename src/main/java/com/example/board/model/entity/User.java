@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -30,9 +32,18 @@ public class User {
     @Column(nullable = false, length = 50, unique = true)
     private String email;
 
+    private Boolean enabled;
+
 //    @Enumerated(EnumType.STRING)
 //    @Column(nullable = false)
 //    private Role role;
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_role",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private List<Role> roles = new ArrayList<>();
 
     /**
      * 회원정보 수정
@@ -44,5 +55,7 @@ public class User {
         this.password = password;
     }
 
-
+    //cascade = CascadeType.ALL //orphanRemoval = true 부모가 없는 데이터 삭제 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Boards> boards = new ArrayList<>();
 }

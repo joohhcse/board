@@ -1,5 +1,6 @@
 package com.example.board.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -12,23 +13,19 @@ import javax.validation.constraints.Size;
 @Builder
 @Entity
 public class Boards {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @NotNull
     @Size(min=2, max=30, message = "제목은 2자이상 30자 이하입니다")
     private String title;
-
     private String content;
-
     private String writer;
-
     private int view;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User user;
 
     // 게시글 수정
