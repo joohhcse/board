@@ -1,5 +1,6 @@
 package com.example.board.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -38,6 +39,7 @@ public class User {
 //    @Column(nullable = false)
 //    private Role role;
 
+    @JsonIgnore
     @ManyToMany
     @JoinTable(
             name = "user_role",
@@ -48,14 +50,16 @@ public class User {
     /**
      * 회원정보 수정
      * @param nickname
-     * @param password
+     * @param password`
      */
     public void modify(String nickname, String password) {
         this.nickname = nickname;
         this.password = password;
     }
 
-    //cascade = CascadeType.ALL //orphanRemoval = true 부모가 없는 데이터 삭제 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    //cascade = CascadeType.ALL //orphanRemoval = true 부모가 없는 데이터 삭제
+//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+//    @JsonIgnore
     private List<Boards> boards = new ArrayList<>();
 }
